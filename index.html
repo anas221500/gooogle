@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>منصة البريد - إنجازات أنس فاروق</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: linear-gradient(145deg, #0a1f2e, #07141f);
+            font-family: 'Cairo', 'Segoe UI', Tahoma, sans-serif;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            background: rgba(0,0,0,0.65);
+            backdrop-filter: blur(12px);
+            border-radius: 60px;
+            padding: 30px;
+            border: 1px solid #ffcc88;
+        }
+        /* تنسيق شاشة تسجيل الدخول */
+        .auth-section {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        .auth-section h1 { color: #ffdd99; text-align: center; margin-bottom: 5px; }
+        .sub { text-align: center; color: #aaccee; margin-bottom: 25px; font-size: 0.8rem; }
+        input, button {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 60px;
+            border: none;
+            font-size: 1rem;
+        }
+        input { background: #1e2e3a; color: white; }
+        button {
+            background: #e94560;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        button:hover { background: #ff2e5a; transform: scale(1.02); }
+        .switch { text-align: center; margin-top: 15px; color: #88aacc; }
+        .switch a { color: #ffaa88; cursor: pointer; text-decoration: none; }
+        .message { margin-top: 15px; text-align: center; font-size: 0.85rem; }
+        .admin-btn { background: #2a6b9e; margin-top: 15px; }
+        .admin-panel { margin-top: 25px; border-top: 1px solid #ffaa55; padding-top: 15px; display: none; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; background: #000000aa; border-radius: 20px; overflow: hidden; }
+        th, td { padding: 8px; text-align: center; border-bottom: 1px solid #ffaa55; color: #eef4ff; }
+        th { background: #e94560; }
+
+        /* تنسيق صفحة الإنجازات (تظهر بعد تسجيل الدخول) */
+        .achievements-section {
+            display: none;
+        }
+        .section-title {
+            font-size: 1.8rem;
+            color: #ffdd99;
+            border-right: 5px solid #e94560;
+            padding-right: 15px;
+            margin: 30px 0 20px;
+        }
+        .skills-grid, .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+        .card {
+            background: rgba(0,0,0,0.5);
+            border-radius: 40px;
+            padding: 20px;
+            transition: 0.2s;
+            border: 1px solid #ffaa55;
+        }
+        .card:hover { transform: translateY(-5px); border-color: #e94560; }
+        .card h3 { color: #ffdd99; margin-bottom: 10px; font-size: 1.4rem; }
+        .card p { color: #cce5ff; line-height: 1.5; }
+        .badge { background: #e94560; display: inline-block; padding: 4px 12px; border-radius: 30px; font-size: 0.7rem; margin-top: 10px; }
+        .contact-info { text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #ffaa55; }
+        .contact-info a { color: #ffaa88; text-decoration: none; margin: 0 10px; }
+        footer { text-align: center; margin-top: 30px; font-size: 0.7rem; color: #7e9ab5; }
+        .logout-btn {
+            background: #555;
+            margin-top: 20px;
+            width: auto;
+            padding: 8px 20px;
+            display: inline-block;
+        }
+        @media (max-width: 700px) {
+            .container { padding: 20px; }
+            .section-title { font-size: 1.4rem; }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="container" id="appContainer">
+    <!-- قسم تسجيل الدخول وإنشاء الحساب -->
+    <div id="authSection" class="auth-section">
+        <h1>🔐 منصة البريد</h1>
+        <div class="sub">تسجيل الدخول أو إنشاء حساب</div>
+
+        <div id="loginPanel">
+            <input type="email" id="loginEmail" placeholder="البريد الإلكتروني">
+            <input type="password" id="loginPassword" placeholder="كلمة المرور">
+            <button id="doLogin">تسجيل الدخول</button>
+            <div class="switch">ليس لديك حساب؟ <a id="showReg">إنشاء حساب جديد</a></div>
+        </div>
+
+        <div id="registerPanel" style="display:none;">
+            <input type="text" id="regName" placeholder="الاسم الكامل">
+            <input type="email" id="regEmail" placeholder="البريد الإلكتروني">
+            <input type="password" id="regPassword" placeholder="كلمة المرور">
+            <button id="doRegister">إنشاء حساب</button>
+            <div class="switch">لديك حساب؟ <a id="showLogin">تسجيل الدخول</a></div>
+        </div>
+
+        <button id="showAdminBtn" class="admin-btn">👑 دخول المشرف</button>
+
+        <div id="adminPanel" class="admin-panel">
+            <h3 style="color:#ffdd99; text-align:center;">لوحة المشرفين</h3>
+            <input type="password" id="adminKeyInput" placeholder="كلمة مرور المشرف">
+            <button id="adminLoginBtn">عرض البيانات</button>
+            <div id="adminData"></div>
+            <button id="closeAdminBtn" style="background:#555;">إغلاق</button>
+        </div>
+
+        <div id="msg" class="message"></div>
+        <footer>🔒 البيانات تُحفظ على الخادم. المشرف فقط يمكنه رؤيتها.</footer>
+    </div>
+
+    <!-- قسم الإنجازات (يظهر بعد تسجيل الدخول) -->
+    <div id="achievementsSection" class="achievements-section">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+            <h1 style="color:#ffdd99;">🏆 إنجازات ومشاريع أنس فاروق 🏆</h1>
+            <button id="logoutBtn" class="logout-btn">🚪 تسجيل خروج</button>
+        </div>
+        <div class="sub">مطور ويب ومصمم ألعاب – شغفي بالبرمجة يصنع تجارب رقمية فريدة</div>
+
+        <!-- المهارات -->
+        <div class="section-title">🛠️ المهارات والتقنيات</div>
+        <div class="skills-grid">
+            <div class="card"><h3>HTML5 & CSS3</h3><p>تصميم واجهات حديثة ومتجاوبة بالكامل</p></div>
+            <div class="card"><h3>JavaScript</h3><p>تفاعلات متقدمة وألعاب سلسة</p></div>
+            <div class="card"><h3>تطوير الألعاب</h3><p>ألعاب Canvas، Tower Defense، ذاكرة، ألغاز</p></div>
+            <div class="card"><h3>تصميم متجاوب</h3><p>جوال، حاسوب، جهاز لوحي</p></div>
+            <div class="card"><h3>LocalStorage & APIs</h3><p>تخزين البيانات، واجهات برمجية</p></div>
+            <div class="card"><h3>UI/UX</h3><p>تجربة مستخدم جذابة</p></div>
+        </div>
+
+        <!-- المشاريع -->
+        <div class="section-title">🚀 أبرز المشاريع والإنجازات</div>
+        <div class="projects-grid">
+            <div class="card"><h3>🎲 لعبة البنج الناطقة</h3><p>عداد دائري + مجموع كلي، أوامر صوتية، إحصائيات فوز، وتأثير "Change" عند مضاعفات 5.</p><div class="badge">ذكاء اصطناعي صوتي</div></div>
+            <div class="card"><h3>🏰 Tower Defense</h3><p>أبراج متعددة (سهام، ناري، ثلجي، صاروخي)، موجات أعداء، تطوير الأبراج، نظام عملات.</p><div class="badge">استراتيجي</div></div>
+            <div class="card"><h3>🧠 لعبة الذاكرة</h3><p>بطاقات تفاعلية، مؤقت، عدد محاولات، تصميم ثلاثي الأبعاد (Flip).</p><div class="badge">تحدي عقلي</div></div>
+            <div class="card"><h3>📘 منصة تعليمية (رياضيات)</h3><p>شرح مبسط، اختبارات تفاعلية، حفظ التقدم، واجهة عربية.</p><div class="badge">تعليمي</div></div>
+            <div class="card"><h3>🔐 مشفر الرسائل AES-256</h3><p>تطبيق ويب لتشفير وفك تشفير النصوص باستخدام مكتبة CryptoJS.</p><div class="badge">أمن سيبراني</div></div>
+            <div class="card"><h3>🌍 مترجم عالمي (API)</h3><p>ترجمة فورية بين أكثر من 100 لغة، واجهة أنيقة، دعم للجوال.</p><div class="badge">ذكاء اصطناعي</div></div>
+        </div>
+
+        <div class="contact-info">
+            📧 amfarouk010@gmail.com &nbsp;|&nbsp;
+            🔗 github.com/anasfarouk &nbsp;|&nbsp;
+            🔗 linkedin.com/in/anas
+        </div>
+        <footer>✨ جميع المشاريع تم تطويرها بواسطة أنس فاروق باستخدام أحدث تقنيات الويب ✨</footer>
+    </div>
+</div>
+
+<script>
+    // ------------------- المتغيرات العامة -------------------
+    const authSection = document.getElementById('authSection');
+    const achievementsSection = document.getElementById('achievementsSection');
+    const loginDiv = document.getElementById('loginPanel');
+    const registerDiv = document.getElementById('registerPanel');
+    const adminPanel = document.getElementById('adminPanel');
+    const msgDiv = document.getElementById('msg');
+    const ADMIN_KEY = "admin123";
+
+    // التحقق من وجود جلسة سابقة (تخزين محلي)
+    function checkSession() {
+        const loggedIn = localStorage.getItem('userLoggedIn');
+        if (loggedIn === 'true') {
+            authSection.style.display = 'none';
+            achievementsSection.style.display = 'block';
+        } else {
+            authSection.style.display = 'block';
+            achievementsSection.style.display = 'none';
+        }
+    }
+
+    function showMessage(msg, isError = false) {
+        msgDiv.innerHTML = `<span style="color:${isError ? '#ffaaaa' : '#aaffaa'}">${msg}</span>`;
+        setTimeout(() => { if (msgDiv.innerHTML.includes(msg)) msgDiv.innerHTML = ''; }, 3000);
+    }
+
+    // تسجيل الخروج
+    function logout() {
+        localStorage.removeItem('userLoggedIn');
+        authSection.style.display = 'block';
+        achievementsSection.style.display = 'none';
+        showMessage('تم تسجيل الخروج بنجاح');
+    }
+
+    // تبديل بين لوحة التسجيل والدخول
+    document.getElementById('showReg').onclick = () => {
+        loginDiv.style.display = 'none';
+        registerDiv.style.display = 'block';
+        msgDiv.innerHTML = '';
+    };
+    document.getElementById('showLogin').onclick = () => {
+        registerDiv.style.display = 'none';
+        loginDiv.style.display = 'block';
+        msgDiv.innerHTML = '';
+    };
+
+    // تسجيل الدخول
+    document.getElementById('doLogin').onclick = async () => {
+        const email = document.getElementById('loginEmail').value.trim();
+        const password = document.getElementById('loginPassword').value.trim();
+        if (!email || !password) { showMessage('يرجى إدخال البريد وكلمة المرور', true); return; }
+        try {
+            const res = await fetch('/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            });
+            const data = await res.json();
+            if (res.ok) {
+                localStorage.setItem('userLoggedIn', 'true');
+                showMessage(`✅ ${data.message}`);
+                setTimeout(() => {
+                    authSection.style.display = 'none';
+                    achievementsSection.style.display = 'block';
+                }, 500);
+            } else {
+                showMessage(`❌ ${data.error}`, true);
+            }
+        } catch(e) { showMessage('خطأ في الاتصال', true); }
+    };
+
+    // إنشاء حساب جديد
+    document.getElementById('doRegister').onclick = async () => {
+        const name = document.getElementById('regName').value.trim();
+        const email = document.getElementById('regEmail').value.trim();
+        const password = document.getElementById('regPassword').value.trim();
+        if (!name || !email || !password) { showMessage('جميع الحقول مطلوبة', true); return; }
+        try {
+            const res = await fetch('/api/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, email, password })
+            });
+            const data = await res.json();
+            if (res.ok) {
+                showMessage(`✅ ${data.message}`);
+                registerDiv.style.display = 'none';
+                loginDiv.style.display = 'block';
+            } else {
+                showMessage(`❌ ${data.error}`, true);
+            }
+        } catch(e) { showMessage('خطأ في الاتصال', true); }
+    };
+
+    // لوحة المشرف
+    document.getElementById('showAdminBtn').onclick = () => {
+        adminPanel.style.display = 'block';
+    };
+    document.getElementById('closeAdminBtn').onclick = () => {
+        adminPanel.style.display = 'none';
+        document.getElementById('adminData').innerHTML = '';
+    };
+    document.getElementById('adminLoginBtn').onclick = async () => {
+        const adminKey = document.getElementById('adminKeyInput').value.trim();
+        if (!adminKey) { showMessage('أدخل كلمة مرور المشرف', true); return; }
+        try {
+            const res = await fetch('/api/admin/users', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ adminKey })
+            });
+            const data = await res.json();
+            if (!res.ok) {
+                showMessage(`❌ ${data.error}`, true);
+                return;
+            }
+            const users = data.users;
+            if (users.length === 0) {
+                document.getElementById('adminData').innerHTML = '<p style="text-align:center; padding:10px;">لا يوجد مستخدمون</p>';
+                return;
+            }
+            let html = `<table><thead><tr><th>الاسم</th><th>البريد</th><th>كلمة المرور</th><th>التاريخ</th></tr></thead><tbody>`;
+            users.forEach(u => {
+                html += `<tr><td>${escapeHtml(u.name)}</td><td>${escapeHtml(u.email)}</td><td>${escapeHtml(u.password)}</td><td>${u.timestamp || 'قديم'}</td></tr>`;
+            });
+            html += `</tbody></tr>`;
+            document.getElementById('adminData').innerHTML = html;
+        } catch(e) { showMessage('خطأ في الاتصال', true); }
+    };
+
+    // زر تسجيل الخروج
+    document.getElementById('logoutBtn').addEventListener('click', logout);
+
+    function escapeHtml(str) {
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+
+    // فحص الجلسة عند تحميل الصفحة
+    checkSession();
+</script>
+</body>
+</html>

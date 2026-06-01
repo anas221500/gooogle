@@ -1,0 +1,12 @@
+{
+  "name": "auth-achievements-platform",
+  "version": "1.0.0",
+  "description": "منصة تسجيل دخول مع عرض إنجازات أنس فاروق",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
